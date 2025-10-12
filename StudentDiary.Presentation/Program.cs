@@ -1,7 +1,29 @@
+using Microsoft.EntityFrameworkCore;
+using StudentDiary.Infrastructure.Data;
+using StudentDiary.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configure Entity Framework
+builder.Services.AddDbContext<StudentDiaryContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? 
+                      "Data Source=studentdiary.db"));
+
+// Configure session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Register services (interfaces will be implemented later)
+// builder.Services.AddScoped<IAuthService, AuthService>();
+// builder.Services.AddScoped<IDiaryService, DiaryService>();
 
 var app = builder.Build();
 
@@ -16,6 +38,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();
