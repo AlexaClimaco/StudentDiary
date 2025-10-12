@@ -32,7 +32,8 @@ namespace StudentDiary.Infrastructure.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation property
+        // Navigation properties
         public virtual ICollection<DiaryEntry> DiaryEntries { get; set; } = new List<DiaryEntry>();
+        public virtual ICollection<Card> Cards { get; set; } = new List<Card>();
     }
 }

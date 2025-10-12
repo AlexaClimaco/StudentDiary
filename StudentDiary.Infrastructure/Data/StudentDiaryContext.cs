@@ -11,6 +11,7 @@ namespace StudentDiary.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<DiaryEntry> DiaryEntries { get; set; }
+        public DbSet<Card> Cards { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +50,27 @@ namespace StudentDiary.Infrastructure.Data
                 // Configure relationship
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.DiaryEntries)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Card entity configuration
+            modelBuilder.Entity<Card>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Rarity).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.CharacterName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.Element).HasMaxLength(50);
+                entity.Property(e => e.CardType).HasMaxLength(50);
+                entity.Property(e => e.CreatedAt).IsRequired();
+                entity.Property(e => e.UserId).IsRequired();
+
+                // Configure relationship
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Cards)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
